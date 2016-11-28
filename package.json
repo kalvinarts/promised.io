@@ -8,5 +8,9 @@
   },
   "author": "Albert Calbet Martinez <kalvin@unseen.is>",
   "license": "UNLICENSED",
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "socket.io": "^1.7.1",
+    "socket.io-client": "^1.7.1"
+  }
 }

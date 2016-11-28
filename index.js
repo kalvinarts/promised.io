@@ -14,7 +14,14 @@ class PromisedEmitter {
     this._uid = uid; // We will use this as a namespace for our """"protocol"""" XD
     this._unresolved = [];
     this._events = [];
+    this._apiMethods = [];
+    // If provided register the API methods
     if (api) this.registerAPI(api)
+    // Add a helper for the client to retrieve the
+    // available methods list
+    this.on('_getAPIMethods', () => {
+      return this._apiMethods;
+    });
   }
 
   // Check if a response listener is registered
@@ -41,17 +48,6 @@ class PromisedEmitter {
         }
       })
     });
-  }
-
-  // Registers a set of functions in batch
-  registerAPI (obj) {
-    let funcNames = Object.keys(obj);
-    funcNames.forEach((name) => {
-      if (typeof obj[name] === 'function') {
-        this.on(name, data);
-      }
-    });
-    return this;
   }
 
   // Emits an event and returns a promise to handle the response
@@ -120,7 +116,26 @@ class PromisedEmitter {
         resolvePromisedResult(handler(e.data));
       }
     });
+    // Store the method name to this._apiMethods
+    let found = false;
+    this._apiMethods.forEach((method) => {
+      if (method === event)
+        found = true;
+    })
+    if (!found)
+      this._apiMethods.push(event);
     // Let chain calls
+    return this;
+  }
+
+  // Registers a set of functions in batch
+  registerAPI (obj) {
+    let funcNames = Object.keys(obj);
+    funcNames.forEach((name) => {
+      if (typeof obj[name] === 'function') {
+        this.on(name, data);
+      }
+    });
     return this;
   }
 }
