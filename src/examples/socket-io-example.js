@@ -29,7 +29,10 @@ io.on('connection', socket => {
     apiFuncs,  
     // The third argument is the debug flag
     // If enabled the errors on the server will be thrown to the client
-    true
+    true,
+    // You can also pass a context object that will be passed as a
+    // second argument to any event handler
+    { foo: 'bar'}
   );
 
   // Another way to describe our API is to use the .on function on the
@@ -39,9 +42,12 @@ io.on('connection', socket => {
     .on('sayHelloTo', (name) => {
       return `Hello ${name}!`;
     })
+    .on('testContext', (arg, ctx) => {
+      return ctx;
+    })
     // The .on method returns the PromisedEmitter instance
     // so we can chain the calls.
-    .on('asyncWait', secs => {
+    .on('asyncWait', (secs) => {
       // Our API functions can return promise, and the client
       // will recieve the result when the promise is fulfilled
       // or rejected.
@@ -88,6 +94,10 @@ promisedClient.emit('_getAPIMethods').then((methods) => {
 
   // And now just use it like a regular API which methods return
   // a Promise ;)
+  clientAPI.testContext().then((result) => {
+    console.log('-- client: server context =>', result);
+  });
+
   clientAPI.asyncWait(5).then((result) => {
     console.log('-- client: asyncWait method says:', result);
     process.exit(0);

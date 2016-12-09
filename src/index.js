@@ -9,8 +9,10 @@ const genUID = (rBytes = 8, map = [0,1,2,3,4,5,6,7,8,9,'a','b','c','d','e']) => 
 }
 
 class PromisedEmitter {
-  constructor (emitter, api = {}, debug = false, uid = '__pEmitter') {
+  constructor (emitter, api = {}, debug = false, context = null, uid = '__pEmitter') {
     this._emitter = emitter;
+    this._debug = debug;
+    this._ctx = context;
     this._uid = uid; // We will use this as a namespace for our """"protocol"""" XD
     this._unresolved = [];
     this._events = [];
@@ -107,7 +109,7 @@ class PromisedEmitter {
       if (this._debug) {
         try {
           // Call the handler and resolve the return if it's a Promise
-          resolvePromisedResult(handler(e.data));
+          resolvePromisedResult(handler(e.data, this._ctx));
         } catch (err) {
           this._emitter.emit(this._uid+'_R_'+event, {
             uid: e.uid,
@@ -116,7 +118,7 @@ class PromisedEmitter {
         }
       } else {
         // Call the handler and resolve the return if it's a Promise without handling any errors   
-        resolvePromisedResult(handler(e.data));
+        resolvePromisedResult(handler(e.data, this._ctx));
       }
     });
     // Store the method name to this._apiMethods
