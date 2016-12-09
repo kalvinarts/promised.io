@@ -18,6 +18,7 @@ const apiFuncs = {
 
 // First we wait for connections to the server
 io.on('connection', socket => {
+  console.log('-- server - connection recieved');
   
   // When a new connection is recieved we wrap
   // the socket into a PromisedEmitter instance
@@ -25,7 +26,10 @@ io.on('connection', socket => {
     // First argument is the event emitter we want to wrap 
     socket,
     // Optionally we can pass the API object as a second argument
-    apiFuncs  
+    apiFuncs,  
+    // The third argument is the debug flag
+    // If enabled the errors on the server will be thrown to the client
+    true
   );
 
   // Another way to describe our API is to use the .on function on the
@@ -44,7 +48,9 @@ io.on('connection', socket => {
       return new Promise((f, r) => {
         // As a simple example we simply fulfill the promise after
         // a given number of seconds
+        console.log('-- server: waiting', secs, 'seconds');
         setTimeout(() => {
+          console.log('-- server: waited', secs, 'seconds');
           f(`Waited for ${secs} to return this string.`);
         }, secs * 1000);
       })
@@ -64,26 +70,34 @@ const promisedClient = new PromisedEmitter(socket);
 // just pass the function name and the argument object to
 // .emit method of the PromiseEmitter instance
 promisedClient.emit('square', 5).then((result) => {
-  console.log(`The sqare method returned ${result}`);
+  console.log(`-- client: The sqare method returned ${result}`);
 });
 
 // There is a builtin helper to retrieve the registered methods
 // on the other side. We can use it to create a real API objcet 
 // of functions to call.
-let clientAPI = {};
-promisedClient.emit('_getAPIMethods', (methods) => {
+promisedClient.emit('_getAPIMethods').then((methods) => {
+  let clientAPI = {};
   
-  console.log('The server exposes the methods:', methods);
+  console.log('-- client: The server exposes the methods:', methods);
 
   methods.forEach((method) => {
-    clientAPI[method] = (argument) => {
-      promisedEmitter.emit(method, argument);
-    };
+    console.log('  -', method);
+    clientAPI[method] = (argument) => promisedClient.emit(method, argument);
   });
+
+  // And now just use it like a regular API which methods return
+  // a Promise ;)
+  clientAPI.asyncWait(5).then((result) => {
+    console.log('-- client: asyncWait method says:', result);
+    process.exit(0);
+  }).catch((err) => {
+    console.log('call failed:', err);
+    process.exit(1);
+  });
+}).catch((err) => {
+  console.log('Something bad happenned...');
+  throw err;
 });
 
-// And now just use it like a regular API which methods return
-// a Promise ;)
-clientAPI.asyncWait(5).then((result) => {
-  console.log('asyncWait method says:', result);
-});
+

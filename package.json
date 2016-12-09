@@ -2,14 +2,19 @@
   "name": "promised-emitter",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "npm run watch",
+    "watch": "babel -s true src -d dist -w",
+    "build": "babel -s true src -d dist",
+    "test": "node dist/examples/socket-io-example.js"
   },
   "author": "Albert Calbet Martinez <kalvin@unseen.is>",
   "license": "UNLICENSED",
   "private": true,
   "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-preset-env": "0.0.9",
     "socket.io": "^1.7.1",
     "socket.io-client": "^1.7.1"
   }
