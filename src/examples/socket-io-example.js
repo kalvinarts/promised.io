@@ -1,6 +1,6 @@
-import PromisedEmitter from '../index.js'
+import PromisedIO from '../index.js'
 import SocketIO from 'socket.io'
-import SocketIOClient from 'socket.io-client'
+import ClientIO from 'socket.io-client'
 
 // Setup a socket.io server
 const ioPort = 3131;
@@ -21,8 +21,8 @@ io.on('connection', socket => {
   console.log('-- server - connection recieved');
   
   // When a new connection is recieved we wrap
-  // the socket into a PromisedEmitter instance
-  const promisedAPI = new PromisedEmitter(
+  // the socket into a PromisedIO instance
+  const promisedAPI = new PromisedIO(
     // First argument is the event emitter we want to wrap 
     socket,
     // Optionally we can pass the API object as a second argument
@@ -36,7 +36,7 @@ io.on('connection', socket => {
   );
 
   // Another way to describe our API is to use the .on function on the
-  // PromisedEmitter instance the same way we do to a normal socket from
+  // PromisedIO instance the same way we do to a normal socket from
   // socket.io
   promisedAPI
     .on('sayHelloTo', (name) => {
@@ -45,7 +45,7 @@ io.on('connection', socket => {
     .on('testContext', (arg, ctx) => {
       return ctx;
     })
-    // The .on method returns the PromisedEmitter instance
+    // The .on method returns the PromisedIO instance
     // so we can chain the calls.
     .on('asyncWait', (secs) => {
       // Our API functions can return promise, and the client
@@ -67,10 +67,10 @@ io.on('connection', socket => {
 // Now that we have our API defined we can connect to it.
 
 // Setup a socket.io-client
-const socket = new SocketIOClient(`ws://localhost:${ioPort}`);
+const socket = new ClientIO(`ws://localhost:${ioPort}`);
 
 // Now we wrap the socket the same way we did to the server socket
-const promisedClient = new PromisedEmitter(socket);
+const promisedClient = new PromisedIO(socket);
 
 // An we are ready to go! To call methods on the server
 // just pass the function name and the argument object to

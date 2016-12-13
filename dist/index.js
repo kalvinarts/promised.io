@@ -12,7 +12,7 @@ const genUID = (rBytes = 8, map = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 'a', 'b', 'c', 
   return nowS + randA.join('');
 };
 
-class PromisedEmitter {
+class PromisedIO {
   constructor(emitter, api = {}, debug = false, context = null, uid = '__pEmitter') {
     this._emitter = emitter;
     this._debug = debug;
@@ -147,5 +147,5 @@ class PromisedEmitter {
   }
 }
 
-exports.default = PromisedEmitter;
+exports.default = PromisedIO;
 //# sourceMappingURL=index.js.map

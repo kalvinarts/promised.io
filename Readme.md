@@ -1,6 +1,3 @@
-# PromisedEmitter
-### Wrapper for event emitters promisification designed with Socket.io in mind
+# promised.io
+### Wrapper for Socket.io sockets promisification
 
-## Warning!
-
-**TOTALLY UNTESTED** ... prone to crash on the first run XD

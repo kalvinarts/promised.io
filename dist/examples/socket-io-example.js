@@ -33,7 +33,7 @@ io.on('connection', socket => {
   console.log('-- server - connection recieved');
 
   // When a new connection is recieved we wrap
-  // the socket into a PromisedEmitter instance
+  // the socket into a PromisedIO instance
   const promisedAPI = new _index2.default(
   // First argument is the event emitter we want to wrap 
   socket,
@@ -47,14 +47,14 @@ io.on('connection', socket => {
   { foo: 'bar' });
 
   // Another way to describe our API is to use the .on function on the
-  // PromisedEmitter instance the same way we do to a normal socket from
+  // PromisedIO instance the same way we do to a normal socket from
   // socket.io
   promisedAPI.on('sayHelloTo', name => {
     return `Hello ${ name }!`;
   }).on('testContext', (arg, ctx) => {
     return ctx;
   })
-  // The .on method returns the PromisedEmitter instance
+  // The .on method returns the PromisedIO instance
   // so we can chain the calls.
   .on('asyncWait', secs => {
     // Our API functions can return promise, and the client

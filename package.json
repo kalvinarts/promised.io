@@ -1,5 +1,5 @@
 {
-  "name": "promised-emitter",
+  "name": "promised.io",
   "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
@@ -10,7 +10,7 @@
     "test": "node dist/examples/socket-io-example.js"
   },
   "author": "Albert Calbet Martinez <kalvin@unseen.is>",
-  "license": "UNLICENSED",
+  "license": "BSD-3-Clause",
   "private": true,
   "devDependencies": {
     "babel-cli": "^6.18.0",
